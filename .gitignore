@@ -1,0 +1,13 @@
+.env
+.venv
+.DS_Store
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+3monthsreport.xls --- IGNORE ---
+10yearsdata.xls --- IGNORE ---
+.data
+*.pdf
+.data
+*.docx
+*.doc

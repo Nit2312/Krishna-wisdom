@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krishna Wisdom Guide - Divine Knowledge Assistant</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+    <link rel="apple-touch-icon-precomposed" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar (ChatGPT-style) -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <button class="new-chat-btn" type="button" aria-label="New chat">
+                    <i class="fas fa-plus"></i>
+                    <span>New Inquiry</span>
+                </button>
+            </div>
+            <div class="sidebar-body"></div>
+            <div class="sidebar-footer">
+                <div class="status-indicator" id="statusIndicator">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Connecting...</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main chat area -->
+        <main class="main">
+            <!-- Top bar (minimal, ChatGPT-style) -->
+            <header class="top-bar">
+                <div class="top-bar-left">
+                    <button class="sidebar-toggle" type="button" aria-label="Toggle sidebar">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="title-group">
+                        <h1 class="app-title">Krishna Wisdom Guide</h1>
+                        <p class="app-subtitle">A humble servant sharing Krishna's teachings from sacred texts</p>
+                    </div>
+                </div>
+            </header>
+
+            <div class="chat-view">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="welcome-message">
+                        <div class="welcome-icon">
+                            <i class="fas fa-om"></i>
+                        </div>
+                        <h2>Seek Divine Wisdom from Krishna's Teachings</h2>
+                        <p>I am a devoted servant of Shri Krishna. Ask me about the divine teachings found in the Bhagavad Gita, Upanishads, Mahabharata, and Srimad Bhagavatam. All my answers come solely from these sacred texts.</p>
+                        <div class="welcome-suggestions">
+                            <button type="button" class="suggestion-chip" onclick="sendExampleMessage('What does the Bhagavad Gita teach about devotion to Krishna?')">Krishna devotion teachings</button>
+                            <button type="button" class="suggestion-chip" onclick="sendExampleMessage('Explain the path of Bhakti as described in the sacred texts')">Bhakti Yoga path</button>
+                            <button type="button" class="suggestion-chip" onclick="sendExampleMessage('What is the nature of the eternal soul according to Krishna')">Nature of the soul</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-wrapper">
+                    <div class="chat-input-container">
+                        <input
+                            type="text"
+                            id="messageInput"
+                            placeholder="Ask for Krishna's wisdom..."
+                            class="chat-input"
+                            onkeypress="handleKeyPress(event)"
+                        >
+                        <button class="send-btn" id="sendBtn" type="button" onclick="sendMessage()" disabled aria-label="Send">
+                            <i class="fas fa-arrow-up"></i>
+                        </button>
+                    </div>
+                    <p class="input-disclaimer">All answers are drawn solely from Krishna's sacred texts. Seek guidance from qualified teachers for spiritual practice.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-dots">
+            <span></span><span></span><span></span>
+        </div>
+        <p>Seeking divine wisdom...</p>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

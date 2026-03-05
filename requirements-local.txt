@@ -1,0 +1,14 @@
+langchain==0.1.16
+langchain-core>=0.1.52
+langchain-groq
+langchain-community==0.0.32
+langchain-huggingface
+PyPDF2>=3.0.0
+pymupdf>=1.23.0
+pandas>=2.0.0
+numpy>=1.24.0
+openpyxl>=3.1.0
+scikit-learn>=1.2.0
+faiss-cpu>=1.7.4
+python-dotenv>=1.0.0
+# Add any additional local-only packages below
