@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Dose — Krishna Wisdom Guide</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/daily_dose.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+    <div class="app-container">
+
+        <!-- ── Sidebar ─────────────────────────────────────────────────── -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="/" class="new-chat-btn" style="text-decoration:none;">
+                    <i class="fas fa-comment-dots"></i>
+                    <span>Ask Krishna</span>
+                </a>
+            </div>
+
+            <div class="sidebar-body">
+
+                <!-- Today's teaching quick link -->
+                <a href="/daily-dose" class="sidebar-daily-hero">
+                    <span class="sdh-icon"><i class="fas fa-sun"></i></span>
+                    <span class="sdh-text">
+                        <span class="sdh-label">Daily Dose</span>
+                        <span class="sdh-sub" id="sidebarDayLabel">Today's Teaching</span>
+                    </span>
+                    <span class="sdh-badge" id="sidebarDayBadge">D—</span>
+                </a>
+
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="status-indicator" id="statusIndicator">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Connecting…</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ── Main ───────────────────────────────────────────────────────── -->
+        <main class="main">
+
+            <!-- Top bar -->
+            <header class="top-bar">
+                <div class="top-bar-left">
+                    <button class="sidebar-toggle" type="button" aria-label="Toggle sidebar"
+                        onclick="document.querySelector('.app-container').classList.toggle('sidebar-collapsed')">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="title-group">
+                        <h1 class="app-title">Daily Dose of Krishna's Wisdom</h1>
+                        <p class="app-subtitle">One teaching every day — practical, grounded, life-changing</p>
+                    </div>
+                </div>
+                <button class="theme-toggle" id="themeToggle" type="button"
+                    aria-label="Toggle dark mode" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </header>
+
+            <!-- Progress ribbon -->
+            <div class="dose-progress-bar" id="doseProgressBar">
+                <div class="dose-progress-fill" id="doseProgressFill" style="width:0%"></div>
+            </div>
+
+            <!-- ── Content area ────────────────────────────────────────── -->
+            <div class="dose-wrapper" id="doseWrapper">
+
+                <!-- Loading -->
+                <div class="dose-loading" id="doseLoading">
+                    <div class="dose-loading-inner">
+                        <div class="dose-loader-ring">
+                            <span class="dose-loader-om">ॐ</span>
+                        </div>
+                        <p class="dose-loading-title">Seeking today's wisdom…</p>
+                        <p class="dose-loading-sub">Krishna's teaching is being prepared for you</p>
+                    </div>
+                </div>
+
+                <!-- Error -->
+                <div class="dose-error" id="doseError" style="display:none;">
+                    <div class="dose-error-inner">
+                        <i class="fas fa-triangle-exclamation"></i>
+                        <h3>Something went wrong</h3>
+                        <p id="doseErrorMsg">Unable to load today's dose. Please try again.</p>
+                        <button class="dose-retry-btn" onclick="loadDailyDose()">
+                            <i class="fas fa-rotate-right"></i> Try Again
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ── Card ──────────────────────────────────────────────── -->
+                <article class="dose-card" id="doseCard" style="display:none;">
+
+                    <!-- Card hero header -->
+                    <div class="dose-hero">
+                        <div class="dose-hero-left">
+                            <div class="dose-day-pill" id="doseDayBadge">Day — of 100</div>
+                            <div class="dose-date" id="doseDate"></div>
+                            <div class="dose-journey-start" id="journeyStart"></div>
+                        </div>
+                        <div class="dose-hero-right">
+                            <div class="dose-theme-chip" id="doseTheme"></div>
+                        </div>
+                    </div>
+
+                    <!-- Title -->
+                    <h2 class="dose-title" id="doseTitle"></h2>
+
+                    <!-- Source scripture -->
+                    <div class="dose-source">
+                        <i class="fas fa-book-open"></i>
+                        <span id="doseSourceText"></span>
+                    </div>
+
+                    <!-- Reflection question -->
+                    <blockquote class="dose-question" id="doseQuestion"></blockquote>
+
+                    <!-- OM divider -->
+                    <div class="dose-divider">
+                        <span class="dose-divider-line"></span>
+                        <span class="dose-divider-symbol">ॐ</span>
+                        <span class="dose-divider-line"></span>
+                    </div>
+
+                    <!-- Message body -->
+                    <div class="dose-message" id="doseMessage"></div>
+
+                    <!-- Reading done marker -->
+                    <div class="dose-end-marker">
+                        <i class="fas fa-hands-praying"></i>
+                        <span>Jai Shri Krishna</span>
+                    </div>
+
+                    <!-- Action row -->
+                    <div class="dose-actions">
+                        <button class="dose-action-btn" id="copyBtn" onclick="copyMessage()">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                        <button class="dose-action-btn" onclick="shareMessage()">
+                            <i class="fas fa-share-nodes"></i> Share
+                        </button>
+                        <a href="/" class="dose-action-btn">
+                            <i class="fas fa-comment-dots"></i> Ask Krishna
+                        </a>
+                    </div>
+
+                    <!-- Navigator -->
+                    <nav class="dose-navigator" aria-label="Day navigation">
+                        <button class="dose-nav-btn dose-nav-btn--today" onclick="goToToday()">
+                            <i class="fas fa-calendar-day"></i>
+                            <span>Today</span>
+                        </button>
+                    </nav>
+
+                </article>
+            </div><!-- /.dose-wrapper -->
+        </main>
+    </div><!-- /.app-container -->
+
+    <script src="{{ url_for('static', filename='js/daily_dose.js') }}"></script>
+</body>
+</html>

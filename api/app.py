@@ -23,9 +23,11 @@ except ImportError:
 try:
     from api.answer_evaluator import evaluate_answer
     from api.voice_agent import create_voice_pipeline
+    from api.daily_dose import get_daily_dose, load_topics
 except ImportError:
     from answer_evaluator import evaluate_answer
     from voice_agent import create_voice_pipeline
+    from daily_dose import get_daily_dose, load_topics
 
 # Load environment variables
 load_dotenv()
@@ -192,58 +194,71 @@ def get_astra_config():
         "collection_name": collection_name,
     }
 
+# Retry settings for transient HuggingFace API errors (e.g. 504 Gateway Timeout)
+_HF_MAX_RETRIES = int(os.getenv("HF_EMBED_MAX_RETRIES", "4"))
+_HF_RETRY_BACKOFF = float(os.getenv("HF_EMBED_RETRY_BACKOFF", "3.0"))   # seconds; doubles each attempt
+
+
 class RouterHuggingFaceEmbeddings(Embeddings):
-    """HuggingFace embeddings via Inference API."""
-    
+    """HuggingFace embeddings via Inference API with automatic retry on transient errors."""
+
     def __init__(self, api_key: str, model_name: str) -> None:
         if not api_key:
             raise ValueError("HF_TOKEN is required for endpoint embeddings.")
         self._client = InferenceClient(model=model_name, token=api_key)
         self.model_name = model_name
 
+    # ── internal retry helper ───────────────────────────────────────────────
+    def _call_with_retry(self, text: str) -> list:
+        """Call feature_extraction with exponential-backoff retry on 5xx / timeout errors."""
+        import time
+        last_exc = None
+        wait = _HF_RETRY_BACKOFF
+        for attempt in range(1, _HF_MAX_RETRIES + 1):
+            try:
+                result = self._client.feature_extraction(text)
+                if hasattr(result, 'tolist'):
+                    result = result.tolist()
+                if not isinstance(result, list) or len(result) == 0:
+                    raise ValueError(f"Unexpected embedding result: {result!r}")
+                # Flatten 2-D batch result → 1-D vector
+                if isinstance(result[0], list):
+                    result = result[0]
+                return result
+            except Exception as exc:
+                last_exc = exc
+                err_str = str(exc)
+                # Retry only on server-side / network transient errors
+                is_transient = any(code in err_str for code in (
+                    "504", "503", "502", "429", "timeout", "Timeout",
+                    "Connection", "RemoteDisconnected",
+                ))
+                if is_transient and attempt < _HF_MAX_RETRIES:
+                    print(
+                        f"HF embedding attempt {attempt}/{_HF_MAX_RETRIES} failed "
+                        f"({exc.__class__.__name__}). Retrying in {wait:.0f}s…",
+                        file=sys.stderr,
+                    )
+                    time.sleep(wait)
+                    wait *= 2   # exponential backoff
+                else:
+                    break
+        print(f"HF embedding failed after {_HF_MAX_RETRIES} attempts: {last_exc}", file=sys.stderr)
+        raise last_exc
+
+    # ── public Embeddings interface ─────────────────────────────────────────
     def embed_documents(self, texts):
         """Embed a list of texts."""
         if not texts:
             return []
-        try:
-            # Process each text individually since feature_extraction takes a single string
-            embeddings = []
-            for text in texts:
-                result = self._client.feature_extraction(text)
-                # Convert numpy array to list if needed
-                if hasattr(result, 'tolist'):
-                    result = result.tolist()
-                # Validate result is a proper embedding
-                if isinstance(result, list) and len(result) > 0:
-                    embeddings.append(result)
-                else:
-                    raise ValueError(f"Invalid embedding result for text: {result}")
-            return embeddings
-        except Exception as e:
-            print(f"Error embedding documents: {e}", file=sys.stderr)
-            raise
+        embeddings = []
+        for text in texts:
+            embeddings.append(self._call_with_retry(text))
+        return embeddings
 
     def embed_query(self, text):
         """Embed a single query text."""
-        try:
-            result = self._client.feature_extraction(text)
-            # Convert numpy array to list if needed
-            if hasattr(result, 'tolist'):
-                result = result.tolist()
-            # Ensure we get a 1D embedding vector
-            if isinstance(result, list):
-                if len(result) > 0:
-                    # If it's 2D (batch of 1), get the first one
-                    if isinstance(result[0], list):
-                        return result[0]
-                    # If it's already 1D, return as-is
-                    return result
-                else:
-                    raise ValueError("Empty embedding result")
-            raise ValueError(f"Unexpected embedding type: {type(result)}")
-        except Exception as e:
-            print(f"Error embedding query: {e}", file=sys.stderr)
-            raise
+        return self._call_with_retry(text)
 
 
 def load_and_process_data():
@@ -260,16 +275,8 @@ def load_and_process_data():
             model_name=model_name,
         )
         
-        # Test embedding to get dimension and ensure embeddings work
-        print("Testing embeddings...", file=sys.stderr)
-        test_embedding = embeddings.embed_query("test")
-        if not test_embedding:
-            raise ValueError("Embeddings returned empty result. Check HF_TOKEN and model availability.")
-        embedding_dim = len(test_embedding)
-        if embedding_dim == 0:
-            raise ValueError("Embedding dimension is 0. Check HuggingFace embedding model.")
-        print(f"Embedding dimension verified: {embedding_dim}", file=sys.stderr)
-
+        # AstraDB initialises the vector store by calling embed_query once internally
+        # to discover the vector dimension — no need for a separate pre-flight test here.
         astra_config = get_astra_config()
         vectorstore = AstraDBVectorStore(
             embedding=embeddings,
@@ -664,6 +671,38 @@ def _strip_reference_section(text: str) -> str:
 def index():
     """Serve the main page"""
     return render_template('index.html')
+
+
+@app.route('/daily-dose')
+def daily_dose_page():
+    """Serve the Daily Dose page"""
+    return render_template('daily_dose.html')
+
+
+@app.route('/api/daily-dose', methods=['GET'])
+def api_daily_dose():
+    """
+    Return today's Daily Dose of Krishna wisdom.
+    Optional query param: ?day=<1-100> to fetch a specific day's topic.
+    """
+    try:
+        day_param = request.args.get('day', None)
+        day_number = int(day_param) if day_param and day_param.isdigit() else None
+        dose = get_daily_dose(day_number)
+        return jsonify({'success': True, 'data': dose})
+    except Exception as e:
+        print(f"Daily dose generation error: {e}", file=sys.stderr)
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/daily-dose/topics', methods=['GET'])
+def api_daily_dose_topics():
+    """Return the full list of 100 daily topics (no message generation)."""
+    try:
+        topics = load_topics()
+        return jsonify({'success': True, 'topics': topics})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 @app.route('/api/initialize', methods=['POST'])

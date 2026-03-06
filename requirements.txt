@@ -1,3 +1,4 @@
+pymongo[srv]>=4.6
 langchain==0.1.16
 langchain-groq==0.1.0
 langchain-astradb==0.2.0
