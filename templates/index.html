@@ -43,6 +43,9 @@
                         <p class="app-subtitle">A humble servant sharing Krishna's teachings from sacred texts</p>
                     </div>
                 </div>
+                <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode">
+                    <i class="fas fa-moon"></i>
+                </button>
             </header>
 
             <div class="chat-view">
@@ -70,6 +73,12 @@
                             class="chat-input"
                             onkeypress="handleKeyPress(event)"
                         >
+                        <button class="audio-control-btn" id="audioControlBtn" type="button" onclick="toggleAudioPlayback()" aria-label="Pause/Resume audio" style="display: none;">
+                            <i class="fas fa-pause"></i>
+                        </button>
+                        <button class="voice-btn" id="voiceBtn" type="button" onclick="toggleVoiceRecording()" aria-label="Voice input">
+                            <i class="fas fa-microphone"></i>
+                        </button>
                         <button class="send-btn" id="sendBtn" type="button" onclick="sendMessage()" disabled aria-label="Send">
                             <i class="fas fa-arrow-up"></i>
                         </button>
