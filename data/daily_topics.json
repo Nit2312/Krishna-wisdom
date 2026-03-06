@@ -1,0 +1,705 @@
+{
+  "topics": [
+    {
+      "day": 1,
+      "title": "Performing Duty Without Attachment to Results",
+      "question": "How can I do my work wholeheartedly without being anxious about the outcome?",
+      "source": "Bhagavad Gita - Karma Yoga",
+      "theme": "Work & Action",
+      "generated": true
+    },
+    {
+      "day": 2,
+      "title": "Managing Anger Before It Destroys You",
+      "question": "Krishna, I lose my temper easily and regret it later. How can I control my anger?",
+      "source": "Bhagavad Gita Chapter 2",
+      "theme": "Emotions"
+    },
+    {
+      "day": 3,
+      "title": "Finding Stillness in the Middle of Chaos",
+      "question": "How can I stay calm and centered when everything around me is uncertain and chaotic?",
+      "source": "Bhagavad Gita - Sthitaprajna",
+      "theme": "Inner Peace"
+    },
+    {
+      "day": 4,
+      "title": "Overcoming the Fear of Failure",
+      "question": "I am so afraid of failing that I do not even start. What does Krishna say about this fear?",
+      "source": "Bhagavad Gita Chapter 18",
+      "theme": "Courage"
+    },
+    {
+      "day": 5,
+      "title": "Understanding Your True Self Beyond the Body",
+      "question": "Who am I really? Krishna says I am not this body. How does understanding this help me in daily life?",
+      "source": "Bhagavad Gita Chapter 2",
+      "theme": "Self-Knowledge"
+    },
+    {
+      "day": 6,
+      "title": "The Art of Letting Go",
+      "question": "I hold on to people, outcomes and the past so tightly. How do I learn to let go gracefully?",
+      "source": "Bhagavad Gita - Vairagya",
+      "theme": "Detachment"
+    },
+    {
+      "day": 7,
+      "title": "Handling Criticism and Insult with Dignity",
+      "question": "How should I respond when people disrespect me or criticise me unfairly?",
+      "source": "Mahabharata - Stories of Dharma",
+      "theme": "Relationships"
+    },
+    {
+      "day": 8,
+      "title": "Living in the Present Moment",
+      "question": "I am always worried about the future or regret the past. How can I live fully in the present?",
+      "source": "Bhagavad Gita Chapter 6",
+      "theme": "Mindfulness"
+    },
+    {
+      "day": 9,
+      "title": "Dealing with Jealousy and Envy",
+      "question": "I often feel jealous of others' success. Krishna, how do I overcome this feeling?",
+      "source": "Bhagavad Gita Chapter 16",
+      "theme": "Emotions"
+    },
+    {
+      "day": 10,
+      "title": "The Power of Focused Action",
+      "question": "How can I develop deep focus and stop getting distracted so easily in my work?",
+      "source": "Bhagavad Gita - Karma Yoga",
+      "theme": "Work & Discipline"
+    },
+    {
+      "day": 11,
+      "title": "Building True Friendships Based on Dharma",
+      "question": "How should I choose my friends and what should friendship look like according to Krishna?",
+      "source": "Mahabharata - Krishna and Arjuna",
+      "theme": "Relationships"
+    },
+    {
+      "day": 12,
+      "title": "Overcoming Procrastination with Right Action",
+      "question": "I keep delaying important tasks. How does Krishna's teaching on duty help me stop procrastinating?",
+      "source": "Bhagavad Gita Chapter 3",
+      "theme": "Work & Discipline"
+    },
+    {
+      "day": 13,
+      "title": "Dealing With Grief and Loss",
+      "question": "I have lost someone dear to me and cannot stop grieving. What does Krishna say about death and loss?",
+      "source": "Bhagavad Gita Chapter 2",
+      "theme": "Grief & Healing"
+    },
+    {
+      "day": 14,
+      "title": "The Three Qualities of Nature: Sattva, Rajas, Tamas",
+      "question": "What are the three gunas and how do they affect my decisions, habits and wellbeing?",
+      "source": "Bhagavad Gita Chapter 14",
+      "theme": "Self-Knowledge"
+    },
+    {
+      "day": 15,
+      "title": "Serving Others as a Form of Worship",
+      "question": "Krishna, how is serving people around me the same as serving God?",
+      "source": "Bhagavad Gita Chapter 12",
+      "theme": "Purpose & Service"
+    },
+    {
+      "day": 16,
+      "title": "Finding Your Life's Purpose (Dharma)",
+      "question": "I feel lost and do not know what I should be doing with my life. How do I discover my dharma?",
+      "source": "Bhagavad Gita - Swadharma",
+      "theme": "Purpose & Calling"
+    },
+    {
+      "day": 17,
+      "title": "The Discipline of the Senses",
+      "question": "I give in to temptations and cravings too easily. How do I build self-control?",
+      "source": "Bhagavad Gita Chapter 2 and 3",
+      "theme": "Self-Discipline"
+    },
+    {
+      "day": 18,
+      "title": "Making Difficult Decisions Under Pressure",
+      "question": "I face a very difficult choice and I am confused. How did Arjuna resolve his dilemma and how can I resolve mine?",
+      "source": "Bhagavad Gita Chapter 1 and 18",
+      "theme": "Decision-Making"
+    },
+    {
+      "day": 19,
+      "title": "The Practice of Gratitude",
+      "question": "What does Krishna say about being grateful for what I have rather than always craving more?",
+      "source": "Bhagavad Gita and Upanishads",
+      "theme": "Gratitude"
+    },
+    {
+      "day": 20,
+      "title": "Understanding Karma: Every Action Has a Consequence",
+      "question": "How does the law of karma work and how should it change the way I act every single day?",
+      "source": "Bhagavad Gita - Karma Philosophy",
+      "theme": "Karma"
+    },
+    {
+      "day": 21,
+      "title": "Taming the Restless Mind",
+      "question": "My mind jumps from thought to thought constantly. How do I quieten and steady the mind?",
+      "source": "Bhagavad Gita Chapter 6",
+      "theme": "Mind & Meditation"
+    },
+    {
+      "day": 22,
+      "title": "The True Meaning of Success",
+      "question": "Society defines success as money and status. What does Krishna say is true success?",
+      "source": "Bhagavad Gita Chapter 18",
+      "theme": "Success & Life Goals"
+    },
+    {
+      "day": 23,
+      "title": "Rising Above Ego and Pride",
+      "question": "I struggle with ego. My pride sometimes ruins my relationships and decisions. How do I overcome it?",
+      "source": "Bhagavad Gita Chapter 16",
+      "theme": "Ego"
+    },
+    {
+      "day": 24,
+      "title": "Surrendering to the Divine Will",
+      "question": "What does it mean to surrender to God? How does surrender actually help rather than make me passive?",
+      "source": "Bhagavad Gita Chapter 18",
+      "theme": "Surrender & Faith"
+    },
+    {
+      "day": 25,
+      "title": "The Art of Speaking Truthfully but Kindly",
+      "question": "How do I speak the truth without hurting others? When should I speak and when should I stay silent?",
+      "source": "Mahabharata and Bhagavad Gita Chapter 17",
+      "theme": "Communication"
+    },
+    {
+      "day": 26,
+      "title": "Dealing With Toxic People in Your Life",
+      "question": "How do I protect my peace from people who constantly drain and harm me?",
+      "source": "Mahabharata - Lessons of Dharma",
+      "theme": "Relationships"
+    },
+    {
+      "day": 27,
+      "title": "Understanding Pain as a Teacher",
+      "question": "I am going through a painful phase in life. How does Krishna want me to look at this suffering?",
+      "source": "Bhagavad Gita and Srimad Bhagavatam",
+      "theme": "Suffering & Growth"
+    },
+    {
+      "day": 28,
+      "title": "The Power of Discipline and Daily Routine",
+      "question": "What does Krishna say about the importance of a disciplined daily life and how to build one?",
+      "source": "Bhagavad Gita Chapter 6",
+      "theme": "Habits & Discipline"
+    },
+    {
+      "day": 29,
+      "title": "Wealth, Money and the Right Attitude Toward Material Things",
+      "question": "Is it wrong to desire wealth? How should I think about money according to Krishna's teachings?",
+      "source": "Bhagavad Gita and Mahabharata",
+      "theme": "Wealth & Materialism"
+    },
+    {
+      "day": 30,
+      "title": "Forgiving Others and Releasing Grudges",
+      "question": "Someone deeply wronged me. How do I forgive them without feeling like I am letting them off the hook?",
+      "source": "Mahabharata and Bhagavad Gita",
+      "theme": "Forgiveness"
+    },
+    {
+      "day": 31,
+      "title": "The Nature of the Eternal Soul",
+      "question": "If the soul never dies, how does this truth change the way I should live my life right now?",
+      "source": "Bhagavad Gita Chapter 2",
+      "theme": "Soul & Eternity"
+    },
+    {
+      "day": 32,
+      "title": "Balancing Ambition and Contentment",
+      "question": "How do I pursue my ambitions fully without losing my peace and contentment in life?",
+      "source": "Bhagavad Gita - Santosha",
+      "theme": "Balance"
+    },
+    {
+      "day": 33,
+      "title": "The Role of Faith in Overcoming Obstacles",
+      "question": "When I face huge obstacles, how does faith in something bigger than myself help me keep going?",
+      "source": "Bhagavad Gita and Srimad Bhagavatam",
+      "theme": "Faith"
+    },
+    {
+      "day": 34,
+      "title": "Understanding Divine Love: Bhakti",
+      "question": "What is bhakti or divine love and how can I bring this love into my everyday ordinary life?",
+      "source": "Bhagavad Gita Chapter 12 and Srimad Bhagavatam",
+      "theme": "Devotion"
+    },
+    {
+      "day": 35,
+      "title": "Why Do Good People Suffer?",
+      "question": "I try to be good but I keep facing hardships. Why do righteous people suffer according to Krishna?",
+      "source": "Mahabharata and Bhagavad Gita",
+      "theme": "Suffering & Justice"
+    },
+    {
+      "day": 36,
+      "title": "The Wisdom of Silence",
+      "question": "When should I speak and when is silence the wisest response? How do I learn to use silence as a tool?",
+      "source": "Mahabharata - Vidura Niti",
+      "theme": "Wisdom"
+    },
+    {
+      "day": 37,
+      "title": "Dealing With Uncertainty and the Unknown",
+      "question": "I am terrified of uncertainty. How does Krishna's teaching help me embrace what I cannot control?",
+      "source": "Bhagavad Gita Chapter 18",
+      "theme": "Uncertainty"
+    },
+    {
+      "day": 38,
+      "title": "Compassion as a Daily Practice",
+      "question": "How can I cultivate genuine compassion for others in my daily interactions and not just in theory?",
+      "source": "Bhagavad Gita and Srimad Bhagavatam",
+      "theme": "Compassion"
+    },
+    {
+      "day": 39,
+      "title": "The Three Types of Knowledge",
+      "question": "Krishna describes three types of knowledge. How do I develop wisdom beyond mere information?",
+      "source": "Bhagavad Gita Chapter 18",
+      "theme": "Knowledge & Wisdom"
+    },
+    {
+      "day": 40,
+      "title": "Work as Devotion: Karma Yoga in Modern Life",
+      "question": "How can I transform my daily work, even boring tasks, into a spiritual practice?",
+      "source": "Bhagavad Gita Chapter 3 and 4",
+      "theme": "Work & Spirituality"
+    },
+    {
+      "day": 41,
+      "title": "Managing Relationships Without Losing Yourself",
+      "question": "How do I care deeply for others without losing my own sense of identity and peace?",
+      "source": "Bhagavad Gita and Mahabharata",
+      "theme": "Relationships"
+    },
+    {
+      "day": 42,
+      "title": "The Danger of Desire and Attachment",
+      "question": "My desires and attachments keep causing me pain. How do I deal with them according to Krishna?",
+      "source": "Bhagavad Gita Chapter 2 and 3",
+      "theme": "Desire & Attachment"
+    },
+    {
+      "day": 43,
+      "title": "Leadership and Dharmic Responsibility",
+      "question": "I am in a position of leadership. What does Krishna say about how to lead with wisdom and integrity?",
+      "source": "Mahabharata and Bhagavad Gita",
+      "theme": "Leadership"
+    },
+    {
+      "day": 44,
+      "title": "The Power of Thoughts and Where They Lead",
+      "question": "My thoughts are often negative and fearful. How do I understand and transform my thought patterns?",
+      "source": "Bhagavad Gita Chapter 6",
+      "theme": "Mind & Thoughts"
+    },
+    {
+      "day": 45,
+      "title": "The Wisdom of the Upanishads: You Are That",
+      "question": "The Upanishads say Tat Tvam Asi, you are that. What does this mean and how does it change my perspective?",
+      "source": "108 Upanishads",
+      "theme": "Vedanta Philosophy"
+    },
+    {
+      "day": 46,
+      "title": "Understanding Time: Past, Present and Future",
+      "question": "How should I relate to time? When is it right to reflect on the past and when is it harmful?",
+      "source": "Bhagavad Gita and Upanishads",
+      "theme": "Time & Perspective"
+    },
+    {
+      "day": 47,
+      "title": "Courage to Stand Alone for What Is Right",
+      "question": "I am being pressured to go against my values. How do I find the courage to stand firm?",
+      "source": "Mahabharata and Bhagavad Gita",
+      "theme": "Courage & Integrity"
+    },
+    {
+      "day": 48,
+      "title": "The Practice of Non-Violence in Thought and Action",
+      "question": "How can I practice ahimsa or non-violence not just physically but in the way I speak and think?",
+      "source": "Bhagavad Gita Chapter 16 and Upanishads",
+      "theme": "Non-Violence"
+    },
+    {
+      "day": 49,
+      "title": "Trusting the Process When Results Are Slow",
+      "question": "I am working hard but not seeing results. How do I keep going with faith and not give up?",
+      "source": "Bhagavad Gita Chapter 3",
+      "theme": "Perseverance"
+    },
+    {
+      "day": 50,
+      "title": "The Gift of Humility",
+      "question": "What does Krishna say about humility and why is it actually a sign of strength not weakness?",
+      "source": "Bhagavad Gita Chapter 13",
+      "theme": "Humility"
+    },
+    {
+      "day": 51,
+      "title": "Breaking Free From the Cycle of Comparison",
+      "question": "I constantly compare myself to others and it makes me miserable. How do I break this habit?",
+      "source": "Bhagavad Gita and Upanishads",
+      "theme": "Self-Acceptance"
+    },
+    {
+      "day": 52,
+      "title": "Learning From Failure Without Being Crushed by It",
+      "question": "I feel destroyed by my recent failure. How does Krishna want me to process and learn from it?",
+      "source": "Bhagavad Gita",
+      "theme": "Failure & Resilience"
+    },
+    {
+      "day": 53,
+      "title": "The Ego's Illusion: Why We Suffer From Identity",
+      "question": "Why is the sense of I, me and mine the source of so much pain and how do I loosen its grip?",
+      "source": "Bhagavad Gita and Upanishads",
+      "theme": "Ego & Identity"
+    },
+    {
+      "day": 54,
+      "title": "Beauty of Impermanence: Nothing Lasts Forever",
+      "question": "Everything changes and nothing lasts. How do I make peace with this truth and live better because of it?",
+      "source": "Bhagavad Gita and Srimad Bhagavatam",
+      "theme": "Impermanence"
+    },
+    {
+      "day": 55,
+      "title": "Eating and Living Sattvically",
+      "question": "What does Krishna say about food, lifestyle and how our daily habits affect our consciousness?",
+      "source": "Bhagavad Gita Chapter 17",
+      "theme": "Lifestyle & Health"
+    },
+    {
+      "day": 56,
+      "title": "The Wisdom of Accepting What You Cannot Change",
+      "question": "Some things in my life cannot be changed. How do I accept them without becoming passive or depressed?",
+      "source": "Bhagavad Gita",
+      "theme": "Acceptance"
+    },
+    {
+      "day": 57,
+      "title": "Listening Deeply as a Spiritual Practice",
+      "question": "How can listening more carefully and deeply to others become a form of spiritual growth?",
+      "source": "Mahabharata and Upanishads",
+      "theme": "Communication & Wisdom"
+    },
+    {
+      "day": 58,
+      "title": "The Value of Solitude and Inner Reflection",
+      "question": "I never take time alone for reflection. What is the value of solitude according to Krishna?",
+      "source": "Bhagavad Gita Chapter 6 and Upanishads",
+      "theme": "Solitude & Reflection"
+    },
+    {
+      "day": 59,
+      "title": "Dharma in Family Relationships",
+      "question": "How do I fulfil my duties to my family without losing my own sense of self and purpose?",
+      "source": "Mahabharata - Family Dharma",
+      "theme": "Family"
+    },
+    {
+      "day": 60,
+      "title": "What Krishna Says About Death and What Lies Beyond",
+      "question": "How does understanding death as a transition and not an end change how I live today?",
+      "source": "Bhagavad Gita Chapter 2 and Srimad Bhagavatam",
+      "theme": "Death & Afterlife"
+    },
+    {
+      "day": 61,
+      "title": "The Importance of Right Association (Satsang)",
+      "question": "Why does Krishna emphasise the company we keep and how do I choose the right people to be around?",
+      "source": "Srimad Bhagavatam and Mahabharata",
+      "theme": "Relationships & Growth"
+    },
+    {
+      "day": 62,
+      "title": "Developing Patience in an Impatient World",
+      "question": "I am very impatient and it costs me greatly. How do I develop patience as a daily practice?",
+      "source": "Bhagavad Gita",
+      "theme": "Patience"
+    },
+    {
+      "day": 63,
+      "title": "The Teaching of Nishkama Karma: Selfless Action",
+      "question": "How can I act without any selfish motive and why would this actually make me more effective in the world?",
+      "source": "Bhagavad Gita Chapter 3",
+      "theme": "Selflessness"
+    },
+    {
+      "day": 64,
+      "title": "Healing Resentment and Old Wounds",
+      "question": "I carry old wounds and resentment that affect my present life. How do I heal from deep within?",
+      "source": "Mahabharata and Srimad Bhagavatam",
+      "theme": "Healing"
+    },
+    {
+      "day": 65,
+      "title": "The Three Paths to God: Jnana, Bhakti, Karma",
+      "question": "Krishna describes three paths to liberation. Which path suits me and how do I walk it daily?",
+      "source": "Bhagavad Gita",
+      "theme": "Spiritual Paths"
+    },
+    {
+      "day": 66,
+      "title": "Learning to Receive Gracefully",
+      "question": "I struggle to accept help from others. What does spiritual wisdom say about giving and receiving?",
+      "source": "Mahabharata and Bhagavad Gita",
+      "theme": "Giving & Receiving"
+    },
+    {
+      "day": 67,
+      "title": "The Trap of Overthinking",
+      "question": "I overthink every decision and it paralyses me. How does Krishna's wisdom help me act despite uncertainty?",
+      "source": "Bhagavad Gita",
+      "theme": "Mind & Decision-Making"
+    },
+    {
+      "day": 68,
+      "title": "Responsibility Without Guilt",
+      "question": "I take on too much responsibility and then punish myself when things go wrong. How do I find balance?",
+      "source": "Bhagavad Gita and Mahabharata",
+      "theme": "Responsibility"
+    },
+    {
+      "day": 69,
+      "title": "The Illusion of Control",
+      "question": "I try to control everything and everyone around me and it exhausts me. What does Krishna say about this?",
+      "source": "Bhagavad Gita Chapter 18",
+      "theme": "Control & Surrender"
+    },
+    {
+      "day": 70,
+      "title": "Inner Strength That Does Not Depend on Circumstances",
+      "question": "How do I build a kind of inner strength that holds steady no matter what happens around me?",
+      "source": "Bhagavad Gita - Sthitaprajna Concept",
+      "theme": "Resilience"
+    },
+    {
+      "day": 71,
+      "title": "The Wisdom of Not Arguing With Fools",
+      "question": "How do I know when to engage in debate and when silence or withdrawal is the wiser choice?",
+      "source": "Mahabharata - Vidura Niti",
+      "theme": "Wisdom in Conflict"
+    },
+    {
+      "day": 72,
+      "title": "Sacred Purpose Behind Pain",
+      "question": "What if my pain and struggles have a deeper purpose? How does Krishna help me see hardship differently?",
+      "source": "Srimad Bhagavatam",
+      "theme": "Purpose in Suffering"
+    },
+    {
+      "day": 73,
+      "title": "Discovering What You Truly Value",
+      "question": "How do I understand my true values versus what society has conditioned me to believe I should value?",
+      "source": "Bhagavad Gita and Upanishads",
+      "theme": "Values & Clarity"
+    },
+    {
+      "day": 74,
+      "title": "The Power of Consistent Small Actions",
+      "question": "Can small daily actions really transform life? What does Krishna say about consistency over intensity?",
+      "source": "Bhagavad Gita Chapter 6",
+      "theme": "Habits & Progress"
+    },
+    {
+      "day": 75,
+      "title": "Living With Integrity When No One is Watching",
+      "question": "How do I stay true to my values and do what is right even when no one is watching and there is nothing to gain?",
+      "source": "Mahabharata and Bhagavad Gita",
+      "theme": "Integrity"
+    },
+    {
+      "day": 76,
+      "title": "The Role of Surrender in Bhakti",
+      "question": "What does it practically mean to surrender myself to Krishna and how does this affect my mental wellbeing?",
+      "source": "Srimad Bhagavatam and Bhagavad Gita Chapter 18",
+      "theme": "Devotion & Surrender"
+    },
+    {
+      "day": 77,
+      "title": "Dealing With Disappointment in Others",
+      "question": "Those I trusted have let me down deeply. How do I heal without becoming bitter and distrustful?",
+      "source": "Mahabharata",
+      "theme": "Trust & Betrayal"
+    },
+    {
+      "day": 78,
+      "title": "The Seven Divine Qualities to Cultivate",
+      "question": "Krishna lists divine qualities in the Gita. How can I practically build these qualities into my character?",
+      "source": "Bhagavad Gita Chapter 16",
+      "theme": "Character Development"
+    },
+    {
+      "day": 79,
+      "title": "Work-Life Balance Through the Lens of Dharma",
+      "question": "How do I balance my professional duties with my family, spiritual life and personal health?",
+      "source": "Mahabharata and Bhagavad Gita",
+      "theme": "Life Balance"
+    },
+    {
+      "day": 80,
+      "title": "Understanding Maya: Why We See the World in Illusion",
+      "question": "What is maya and how does seeing through this illusion help me make better choices in life?",
+      "source": "Bhagavad Gita and Upanishads",
+      "theme": "Reality & Illusion"
+    },
+    {
+      "day": 81,
+      "title": "The Art of Giving Without Expectation",
+      "question": "How do I give generously to others without expecting anything in return, especially when I feel depleted?",
+      "source": "Bhagavad Gita Chapter 17",
+      "theme": "Generosity"
+    },
+    {
+      "day": 82,
+      "title": "How to Handle Professional Jealousy and Competition",
+      "question": "My colleagues are jealous of my work and create obstacles for me. How do I handle this with grace?",
+      "source": "Mahabharata and Bhagavad Gita",
+      "theme": "Workplace & Career"
+    },
+    {
+      "day": 83,
+      "title": "The Significance of Prayer and Mantra in Daily Life",
+      "question": "How does speaking sacred words and prayer actually influence my mind and daily experience?",
+      "source": "Srimad Bhagavatam and Upanishads",
+      "theme": "Prayer & Practice"
+    },
+    {
+      "day": 84,
+      "title": "Finding Meaning When Life Feels Empty",
+      "question": "I feel a deep emptiness and meaninglessness in life. What does Krishna say is the cure for this?",
+      "source": "Bhagavad Gita and Srimad Bhagavatam",
+      "theme": "Meaning & Purpose"
+    },
+    {
+      "day": 85,
+      "title": "The Teaching of Universal Brotherhood",
+      "question": "How does seeing the divine in every person change the way I treat people in daily life?",
+      "source": "Bhagavad Gita Chapter 6 and Upanishads",
+      "theme": "Oneness & Unity"
+    },
+    {
+      "day": 86,
+      "title": "When to Fight and When to Walk Away",
+      "question": "How do I know when a battle is worth fighting and when the wise choice is to step away?",
+      "source": "Mahabharata and Bhagavad Gita",
+      "theme": "Wisdom in Conflict"
+    },
+    {
+      "day": 87,
+      "title": "Self-Compassion: Being Kind to Yourself",
+      "question": "I am very harsh on myself when I make mistakes. What does Krishna say about self-compassion and self-forgiveness?",
+      "source": "Bhagavad Gita",
+      "theme": "Self-Compassion"
+    },
+    {
+      "day": 88,
+      "title": "The Nature of True Happiness",
+      "question": "I keep pursuing things that I think will make me happy but they never do. Where does real happiness come from?",
+      "source": "Bhagavad Gita Chapter 6 and Upanishads",
+      "theme": "Happiness"
+    },
+    {
+      "day": 89,
+      "title": "Navigating Change and Life Transitions",
+      "question": "My life is going through a major change that frightens me. How does Krishna's wisdom help me navigate it?",
+      "source": "Bhagavad Gita and Srimad Bhagavatam",
+      "theme": "Change & Transition"
+    },
+    {
+      "day": 90,
+      "title": "The Connection Between Body, Mind and Soul",
+      "question": "How does taking care of my physical body serve my spiritual journey and mental clarity?",
+      "source": "Bhagavad Gita and Upanishads",
+      "theme": "Holistic Wellbeing"
+    },
+    {
+      "day": 91,
+      "title": "Sacred Duties of a Parent",
+      "question": "What does Krishna's wisdom say about how to raise children with good values and dharmic character?",
+      "source": "Mahabharata and Srimad Bhagavatam",
+      "theme": "Parenting"
+    },
+    {
+      "day": 92,
+      "title": "Handling Injustice Without Losing Peace",
+      "question": "I witness or experience injustice and feel both rage and helplessness. How do I respond righteously?",
+      "source": "Mahabharata and Bhagavad Gita",
+      "theme": "Justice & Righteousness"
+    },
+    {
+      "day": 93,
+      "title": "Living Simply and Finding Richness in Simplicity",
+      "question": "How can I simplify my life, reduce my wants and yet feel more abundant and fulfilled?",
+      "source": "Bhagavad Gita and Upanishads",
+      "theme": "Simple Living"
+    },
+    {
+      "day": 94,
+      "title": "The Role of a Guru and Learning From Wisdom Keepers",
+      "question": "Why is a teacher or guide important on the spiritual path and how do I recognise a true one?",
+      "source": "Bhagavad Gita Chapter 4 and Mahabharata",
+      "theme": "Guru & Learning"
+    },
+    {
+      "day": 95,
+      "title": "The Transactional Trap: When Relationships Become Business",
+      "question": "How do I recognise when my relationships have become purely transactional and how do I restore depth?",
+      "source": "Mahabharata and Bhagavad Gita",
+      "theme": "Relationships"
+    },
+    {
+      "day": 96,
+      "title": "Acting With Courage When You Are Afraid",
+      "question": "I feel fear but I know I must act. How does Krishna teach us to act courageously despite fear?",
+      "source": "Bhagavad Gita",
+      "theme": "Courage & Fear"
+    },
+    {
+      "day": 97,
+      "title": "The Wisdom of Brahmacharya: Channelling Energy Wisely",
+      "question": "What does Brahmacharya mean in modern life and how does conserving my energy serve my higher purpose?",
+      "source": "Upanishads and Bhagavad Gita",
+      "theme": "Energy & Discipline"
+    },
+    {
+      "day": 98,
+      "title": "The Highest Goal: Moksha and Why It Matters Now",
+      "question": "What is moksha or liberation and why should it be relevant to a modern person living a regular life?",
+      "source": "Bhagavad Gita and Upanishads",
+      "theme": "Liberation"
+    },
+    {
+      "day": 99,
+      "title": "Returning to Yourself After a Storm",
+      "question": "After a very difficult period in life I feel lost and disconnected from who I am. How do I return to myself?",
+      "source": "Bhagavad Gita and Srimad Bhagavatam",
+      "theme": "Recovery & Renewal"
+    },
+    {
+      "day": 100,
+      "title": "Living Every Day as an Offering to the Divine",
+      "question": "How can I transform my entire daily life into a continuous act of worship and devotion to Krishna?",
+      "source": "Bhagavad Gita Chapter 9 and 12 and Srimad Bhagavatam",
+      "theme": "Devotion in Daily Life"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 """
-AI agent that evaluates RAG pipeline answers for technical (elevator) questions.
-Checks correctness, grounding in sources, completeness, and technical accuracy.
+AI agent that evaluates RAG pipeline answers for Krishna Wisdom spiritual questions.
+Checks faithfulness to Hindu scripture sources, completeness, relevance, and citation quality.
 """
 
 import json
@@ -12,28 +12,41 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_groq import ChatGroq
 
 
-EVALUATOR_SYSTEM_PROMPT = """You are a technical QA expert for elevator controls and procedures. Your job is to evaluate whether an AI assistant's answer to a technical question is correct, complete, and properly grounded in the provided source documents.
+EVALUATOR_SYSTEM_PROMPT = """You are an expert evaluator of answers grounded in Hindu sacred texts — specifically the Bhagavad Gita, Upanishads, Mahabharata, and Srimad Bhagavatam (Bhagavata Purana). Your job is to evaluate whether an AI assistant's answer to a spiritual or life-guidance question is correct, well-grounded, and helpful.
 
 You will receive:
 1. The user's question
 2. The RAG assistant's answer
-3. The source documents that were retrieved (PDF excerpts or case records)
+3. The source document excerpts that were retrieved (from PDFs of Hindu scriptures)
+
+IMPORTANT CONTEXT — THE VALID SOURCE TEXTS:
+The system's knowledge base contains ONLY these four texts:
+- Bhagavad Gita (file: Bhagavad-gita-As-It-Is.pdf)
+- 108 Upanishads (file: 108upanishads.pdf)
+- Mahabharata (file: Mahabharata (Unabridged in English).pdf)
+- Srimad Bhagavatam / Bhagavata Purana (file: SB3.1.pdf)
+
+Do NOT penalise the answer for referencing concepts that are intrinsic to these four texts, even if those exact passages were not in the retrieved excerpts. For example:
+- "Swadharma", "Karma Yoga", "Nishkama Karma", "Arjuna's dilemma" are core Bhagavad Gita concepts — acceptable references.
+- "Atman", "Brahman", "Self-realisation", "Maya" are central Upanishadic concepts — acceptable references.
+- Stories from the Mahabharata or Bhagavatam are valid to reference by name.
+The retrieved excerpts are a SAMPLE of what was found; the model may legitimately draw on the deeper philosophical spirit of these texts.
 
 Evaluate the answer on these criteria:
 
-**Grounding**: Is every factual claim in the answer supported by the sources? Flag any hallucination, unsupported specs (terminal numbers, step order, part names), or invented procedures.
+**Faithfulness**: Are the philosophical claims consistent with the spirit and teachings of the four source texts? Flag any clear misrepresentation, invented scripture, or concepts that contradict these traditions. Do NOT flag authentic Hindu philosophical concepts just because the exact verse is unseen in the retrieved chunks.
 
-**Completeness**: For procedures (conversion, installation, setup, testing), are all steps present in the correct order? Are prerequisites (power off, jumpers) and safety notes included when they appear in the sources?
+**Answer relevance**: Does the answer directly address the person's real-world problem? A good answer applies scripture practically to modern life — not just quotes philosophy in the abstract.
 
-**Technical accuracy**: Are terminology, part names, and step sequences correct per the sources? Are safety warnings preserved?
+**Completeness**: Does the answer acknowledge the person's struggle, connect it to relevant teachings, and give practical guidance? Generic platitudes with no real application are a weakness.
 
-**Appropriate hedging**: If the sources do not contain information for the question, the answer should say so clearly (e.g. "No procedure for this in the retrieved documentation"). Penalize guessing or generic filler when the sources don't support it.
+**Appropriate scope**: If the question is clearly out of scope (e.g. cooking recipes, sports, coding, finance), the answer should politely decline and not invent spiritual guidance. Penalise answers that fabricate a spiritual connection to completely unrelated topics.
 
-**Citation**: Are sources cited (e.g. PDF filename, CaseID) where relevant?
+**Citation quality**: Are relevant source texts named (e.g. "From the Bhagavad Gita", "The Upanishads teach...") where appropriate? Over-citing or robotically listing PDF filenames is not required — natural, readable source attribution is preferred.
 
 You must also provide:
-- **faithfulness** (0-100): How much of the answer is grounded in the sources with no hallucinations? 100 = every claim supported by sources; 0 = entirely made up or unsupported.
-- **answer_relevance** (0-100): How on-topic is the answer to the question? 100 = fully addresses the question; 0 = irrelevant or off-topic.
+- **faithfulness** (0-100): How well does the answer align with the authentic teachings of these four Hindu scriptures? 100 = perfectly grounded; 0 = contradicts or fabricates scripture.
+- **answer_relevance** (0-100): How directly and practically does the answer address the user's question? 100 = fully on-point with actionable guidance; 0 = irrelevant or off-topic.
 
 Output a JSON object only, no other text, with this exact structure:
 {
@@ -47,7 +60,7 @@ Output a JSON object only, no other text, with this exact structure:
   "strengths": ["<strength 1>", ...]
 }
 
-Use "pass" when the answer is accurate, complete, and grounded; "warning" when mostly good but with minor gaps or one unsupported claim; "fail" when there are serious errors, hallucinations, or major missing steps.
+Use "pass" when the answer is spiritually accurate, practically helpful, and well-grounded; "warning" when mostly good but with minor gaps, vague application, or one questionable claim; "fail" when the answer clearly misrepresents scripture, gives harmful or irresponsible guidance, or fabricates concepts not found in Hindu philosophy.
 
 Respond with ONLY a single JSON object. No markdown, no code fence, no explanation before or after. Valid JSON only.
 """
@@ -108,9 +121,9 @@ def evaluate_answer(question: str, response: str, sources: List[Dict[str, Any]])
     Run the evaluation agent on a RAG answer.
 
     Args:
-        question: The user's technical question.
+        question: The user's spiritual or life-guidance question.
         response: The RAG pipeline's answer.
-        sources: List of source dicts with type, content, and type-specific fields (case_id, job_name, filename).
+        sources: List of source dicts with type, content, and type-specific fields (filename, etc.).
 
     Returns:
         Dict with verdict, score, faithfulness, answer_relevance, summary, issues, suggestions, strengths.
