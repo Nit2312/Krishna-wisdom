@@ -40,11 +40,11 @@ async function loadDailyDose(dayNumber = null) {
     try {
         const url = dayNumber ? `/api/daily-dose?day=${dayNumber}` : '/api/daily-dose';
         const res  = await fetch(url);
+        const json = await res.json().catch(() => ({}));
 
-        if (!res.ok) throw new Error(`Server returned ${res.status}`);
-
-        const json = await res.json();
-        if (!json.success) throw new Error(json.error || 'Failed to load.');
+        if (!res.ok || !json.success) {
+            throw new Error(json.error || `Server returned ${res.status}`);
+        }
 
         const data = json.data;
         currentDay = data.day;

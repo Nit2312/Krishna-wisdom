@@ -685,13 +685,16 @@ def api_daily_dose():
     Return today's Daily Dose of Sanatan Sutra wisdom.
     Optional query param: ?day=<1-100> to fetch a specific day's topic.
     """
+    if not os.getenv('GROQ_API_KEY'):
+        return jsonify({'success': False, 'error': 'GROQ_API_KEY is not configured on the server.'}), 500
     try:
         day_param = request.args.get('day', None)
         day_number = int(day_param) if day_param and day_param.isdigit() else None
         dose = get_daily_dose(day_number)
         return jsonify({'success': True, 'data': dose})
     except Exception as e:
-        print(f"Daily dose generation error: {e}", file=sys.stderr)
+        import traceback
+        print(f"Daily dose generation error: {e}\n{traceback.format_exc()}", file=sys.stderr)
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
