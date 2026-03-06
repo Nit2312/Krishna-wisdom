@@ -1,5 +1,5 @@
 """
-AI agent that evaluates RAG pipeline answers for Krishna Wisdom spiritual questions.
+AI agent that evaluates RAG pipeline answers for Sanatan Sutra spiritual questions.
 Checks faithfulness to Hindu scripture sources, completeness, relevance, and citation quality.
 """
 

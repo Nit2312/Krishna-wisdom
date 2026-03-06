@@ -423,7 +423,7 @@ Wisdom and guidance:
 
         rag_chain = prompt | llm | StrOutputParser()
         
-        return True, f"Krishna Wisdom Guide initialized successfully! All teachings from sacred texts loaded and ready to serve."
+        return True, f"Sanatan Sutra initialized successfully! All teachings from sacred texts loaded and ready to serve."
         
     except Exception as e:
         # Log full traceback for server logs without leaking secrets to clients.
@@ -596,7 +596,7 @@ def _recall_at_k(user_query: str, source_docs: list):
 
 
 def _get_text_name_from_filename(filename: str) -> str:
-    """Extract readable text name from PDF filename for Krishna wisdom texts."""
+    """Extract readable text name from PDF filename for Sanatan Sutra texts."""
     if not filename:
         return ""
     mapping = {
@@ -637,7 +637,7 @@ def _count_cited_sources(response_text: str, source_docs: list) -> int:
             # Try to find text name in response (e.g., "From Bhagavad Gita")
             text_name = _get_text_name_from_filename(filename)
             
-            # Check for "From <text name>" pattern (Krishna wisdom format)
+            # Check for "From <text name>" pattern (Sanatan Sutra format)
             if text_name and f"from {text_name.lower()}" in response_lower:
                 cited += 1
                 continue
@@ -682,7 +682,7 @@ def daily_dose_page():
 @app.route('/api/daily-dose', methods=['GET'])
 def api_daily_dose():
     """
-    Return today's Daily Dose of Krishna wisdom.
+    Return today's Daily Dose of Sanatan Sutra wisdom.
     Optional query param: ?day=<1-100> to fetch a specific day's topic.
     """
     try:

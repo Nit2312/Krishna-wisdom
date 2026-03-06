@@ -1,5 +1,5 @@
 /**
- * Daily Dose — Krishna Wisdom Guide
+ * Daily Dose — Sanatan Sutra
  * Handles loading, navigation, and interaction for the /daily-dose page.
  */
 
@@ -111,7 +111,7 @@ function goToToday() {
 function copyMessage() {
     const title   = el('doseTitle')?.textContent || '';
     const message = el('doseMessage')?.innerText || '';
-    const text    = `${title}\n\n${message}\n\n— Krishna Wisdom Guide`;
+    const text    = `${title}\n\n${message}\n\n— Sanatan Sutra`;
 
     navigator.clipboard.writeText(text)
         .then(() => {

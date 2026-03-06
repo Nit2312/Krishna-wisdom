@@ -1,6 +1,6 @@
-# Krishna Wisdom Guide (Flask + RAG)
+# Sanatan Sutra (Flask + RAG)
 
-Krishna Wisdom Guide is a Flask-based Retrieval-Augmented Generation (RAG) application that answers spiritual questions using only the sacred texts available in the local `data/` folder.
+Sanatan Sutra is a Flask-based Retrieval-Augmented Generation (RAG) application that answers spiritual questions using only the sacred texts available in the local `data/` folder.
 
 The system retrieves relevant passages from Astra DB, then generates a concise and conversational answer with natural source mention (for example: “From Bhagavad Gita…”).
 

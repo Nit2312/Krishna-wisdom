@@ -1,4 +1,4 @@
-# Krishna Wisdom System — Test Questions
+# Sanatan Sutra System — Test Questions
 # Real-world daily life problems to validate RAG pipeline output quality.
 # Format: Category header followed by questions.
 # Use these to check retrieval relevance, answer coherence, and source citation.

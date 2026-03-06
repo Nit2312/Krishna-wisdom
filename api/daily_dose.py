@@ -1,5 +1,5 @@
 """
-Daily Dose Generator — Krishna Wisdom
+Daily Dose Generator — Sanatan Sutra
 Generates a ~500-word daily teaching from Krishna's sacred texts based on a
 topic/question loaded from data/daily_topics.json.
 """
@@ -94,7 +94,7 @@ def _get_collection():
         return None
     try:
         client = MongoClient(uri, serverSelectionTimeoutMS=5000)
-        db_name = os.getenv("MONGODB_DB", "krishna_wisdom")
+        db_name = os.getenv("MONGODB_DB", "sanatan_sutra")
         _mongo_collection = client[db_name]["daily_doses"]
         # Ensure a unique index on day so upsert is safe
         _mongo_collection.create_index("day", unique=True)
@@ -261,7 +261,7 @@ def get_daily_dose(day_number: int | None = None) -> dict:
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="Generate a Daily Dose of Krishna wisdom.")
+    parser = argparse.ArgumentParser(description="Generate a Daily Dose of Sanatan Sutra wisdom.")
     parser.add_argument("--day", type=int, default=None, help="Topic day number (1-100). Defaults to today's auto-selected topic.")
     parser.add_argument("--list", action="store_true", help="List all 100 topics and exit.")
     args = parser.parse_args()

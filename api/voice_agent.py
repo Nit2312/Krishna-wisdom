@@ -141,7 +141,7 @@ def translate_gujarati_to_english(gujarati_text: str) -> str:
             messages=[
                 {
                     "role": "system",
-                    "content": """You are an expert translator for Krishna wisdom and Hindu sacred texts.
+                    "content": """You are an expert translator for Sanatan Sutra and Hindu sacred texts.
 Translate Gujarati text to English accurately. Keep spiritual terms (Bhakti, Dharma, Moksha, Karma, etc) in original form when appropriate.
 Preserve exact meaning. Output ONLY the translation."""
                 },
@@ -170,7 +170,7 @@ Preserve exact meaning. Output ONLY the translation."""
                 messages=[
                     {
                         "role": "system",
-                        "content": "Expert Krishna wisdom translator. Translate Gujarati to English preserving spiritual terms. Output ONLY translation."
+                        "content": "Expert Sanatan Sutra translator. Translate Gujarati to English preserving spiritual terms. Output ONLY translation."
                     },
                     {
                         "role": "user",
@@ -396,7 +396,7 @@ def text_to_speech_english(english_text: str, output_path: str | None = None) ->
     Features:
     - Premium quality, natural-sounding voice
     - Emotional expressiveness
-    - Professional audio for Krishna wisdom
+    - Professional audio for Sanatan Sutra
     
     Args:
         english_text: Text in English
