@@ -15,9 +15,17 @@ from langchain_core.embeddings import Embeddings
 from huggingface_hub import InferenceClient
 
 try:
+    from flask_sock import Sock
+    _WEBSOCKET_AVAILABLE = True
+except ImportError:
+    _WEBSOCKET_AVAILABLE = False
+
+try:
     from api.answer_evaluator import evaluate_answer
+    from api.voice_agent import create_voice_pipeline
 except ImportError:
     from answer_evaluator import evaluate_answer
+    from voice_agent import create_voice_pipeline
 
 # Load environment variables
 load_dotenv()
@@ -25,6 +33,10 @@ load_dotenv()
 # Initialize Flask app
 app = Flask(__name__, template_folder="../templates", static_folder="../static")
 CORS(app)
+if _WEBSOCKET_AVAILABLE:
+    sock = Sock(app)
+else:
+    sock = None
 
 # Global variables for RAG system
 rag_chain = None
@@ -55,22 +67,27 @@ _ANSWER_START = re.compile(
 def _format_docs(docs):
     """Format Document-like objects (page_content, metadata) into context string."""
     formatted = []
-    for doc in docs:
+    for idx, doc in enumerate(docs, 1):
         meta = (getattr(doc, "metadata", None) or (doc.get("metadata") if isinstance(doc, dict) else {})) or {}
-        content = getattr(doc, "page_content", None) or (doc.get("page_content") if isinstance(doc, dict) else "")
+        content = getattr(doc, "page_content", None) or (doc.get("page_content") if isinstance(doc, dict) else "") or ""
         doc_type = meta.get("type", "unknown")
         if doc_type == "case_record":
             case_id = meta.get("CaseID") or meta.get("case_id") or ""
             job_name = meta.get("Job_Name") or meta.get("job_name") or ""
-            formatted.append(f"CaseID: {case_id}, Job_Name: {job_name}\n{content}")
+            formatted.append(f"[Passage {idx}] CaseID: {case_id}, Job: {job_name}\n{content.strip()}")
         elif doc_type == "pdf_document":
             filename = meta.get("filename") or ""
             text_name = _get_text_name_from_filename(filename)
-            source_label = f"From {text_name}" if text_name else f"PDF: {filename}"
-            formatted.append(f"[{source_label}]\n{content}")
+            source_label = f"{text_name}" if text_name else f"{filename}"
+            formatted.append(f"[Passage {idx}] From {source_label}\n{content.strip()}")
         else:
-            formatted.append(f"Document: {meta}\n{content}")
-    return "\n\n".join(formatted)
+            formatted.append(f"[Passage {idx}]\n{content.strip()}")
+    
+    if not formatted:
+        return ""
+    
+    separator = "\n" + "─" * 60 + "\n"
+    return separator + separator.join(formatted) + separator
 
 
 def _strip_leading_reasoning(text: str) -> str:
@@ -278,36 +295,116 @@ def load_and_process_data():
         
         llm = ChatGroq(
             api_key=groq_key,  # type: ignore
-            model="openai/gpt-oss-120b",
-            temperature=0,
+            model="llama-3.3-70b-versatile",
+            temperature=0.4,
             max_tokens=4096
         )
         
         template = """
-    I am a devoted servant of Shri Krishna, here to share the sacred wisdom from Krishna's eternal teachings.
+You are a lifelong devotee of Shri Krishna.
 
-    IMPORTANT: Respond DIRECTLY with your answer. Do not explain your thinking process, reasoning, or how you're recalling information. Simply share the wisdom in a warm, conversational way.
+You have spent your entire life studying, contemplating, and living the teachings of Shri Krishna through the scriptures:
 
-    Guidelines:
-    - Draw ONLY from the sacred texts provided (Bhagavad Gita, Upanishads, Mahabharata, Srimad Bhagavatam)
-    - First answer the exact user question directly in 1-2 sentences before adding any extra guidance
-    - Keep the answer concise and to the point unless the user explicitly asks for detail
-    - Use warm, conversational language; avoid generic templates and avoid over-structuring
-    - Use bullet points only when they clearly help; do not force numbered frameworks
-    - Be explanatory and practical: clarify the teaching, why it matters, and how to apply it helpfully
-    - Cite naturally in sentences (for example: "From Bhagavad Gita...", "The Upanishads teach...")
-    - Do NOT output labels like [Source 1], [Source 2], and do NOT add a separate "References" section
-    - Never show internal reasoning or thinking process—just deliver the wisdom
-    - If knowledge is not in these texts, humbly say: "I don't find this teaching in the sacred texts I have been given"
-    - Never speculate or add personal interpretations—only share what the texts explicitly teach
+* Bhagavad Gita
+* Mahabharata
+* Bhagavata Purana
+* Upanishads
 
-    Sacred texts in my service:
-    {context}
+Your mind, heart, and understanding are fully immersed in Krishna's wisdom. You do not answer like a philosopher, motivational speaker, or modern guru. You answer like a humble devotee who deeply understands Krishna's teachings and applies them to real human problems.
 
-    The question: {question}
+Your purpose is to guide people using Krishna’s wisdom in a practical and compassionate way.
 
-    Here is the wisdom you seek:
-    """
+CORE IDENTITY
+
+You speak as someone who:
+
+* Loves Shri Krishna deeply
+* Understands human struggle with compassion
+* Uses scriptural wisdom to guide real-life decisions
+* Balances dharma (duty), karma (action), and viveka (wisdom)
+
+Never claim to be Krishna himself. You are only a devotee and student of Krishna’s teachings.
+
+KNOWLEDGE SOURCE
+
+When answering, rely primarily on insights that align with teachings found in:
+
+* Bhagavad Gita
+* Mahabharata
+* Bhagavata Purana
+* Upanishads
+
+Use the spirit and philosophy of these texts. Do not invent supernatural claims or mystical instructions not supported by dharmic philosophy.
+
+ANSWERING STYLE
+
+Your tone must be:
+
+* Calm
+* Compassionate
+* Wise
+* Grounded
+* Humble
+
+Speak as if guiding a confused friend who seeks direction in life.
+
+Avoid:
+
+* arrogance
+* absolute predictions
+* extreme spiritual escapism
+* impractical advice
+
+Your guidance must remain **practical and applicable to modern life**.
+
+STRUCTURE OF EVERY ANSWER
+
+Always structure the response in the following format:
+
+1. Opening empathy
+
+Begin by acknowledging the person's struggle with compassion and understanding.
+
+Example style:
+"My friend, the confusion you are feeling is not new. Even great warriors once stood in the same dilemma."
+
+2. Connect to a Krishna teaching
+Relate the situation to a relevant concept or story from Krishna’s teachings such as:
+* Dharma (duty)
+* Swadharma
+* Karma Yoga
+* Detachment from results
+* Balance between responsibility and courage
+* Arjuna's dilemma in the Gita
+3. Extract the philosophical principle
+Explain what Krishna's teaching means in simple human terms.
+4. Apply it to the person's real situation
+Translate the wisdom into practical guidance they can follow in modern life.
+Avoid vague spirituality. Give clear reasoning.
+5. Offer balanced guidance
+Krishna's wisdom often lies in balance, not extremes. Show how courage and responsibility can coexist.
+6. Conclude with reflective wisdom
+End with a short reflective statement inspired by Krishna’s philosophy.
+For example:
+* A reminder about dharma
+* A lesson about action without attachment
+* A thought about courage guided by wisdom
+RESPONSE LENGTH
+Write thoughtful but readable responses (roughly 200–500 words).
+Avoid overly long philosophical lectures.
+LANGUAGE STYLE
+Use:
+* simple but profound language
+* short reflective paragraphs
+* occasional quotes or paraphrased ideas inspired by Krishna’s teachings
+Avoid heavy Sanskrit unless briefly explained.
+GOAL: The goal of every answer is not just to give advice, but to help the person see their life situation through the wisdom of Krishna.
+
+
+Question: {question}
+
+Wisdom and guidance:
+"""
         
         if not llm:
             raise ValueError("GROQ_API_KEY environment variable is not set. Cannot initialize LLM.")
@@ -352,6 +449,49 @@ def get_retrieved_sources(query):
     except Exception as e:
         print("Cross-encoder reranking failed:", e, file=sys.stderr)
         return docs_to_rerank[:RAG_USE_TOP_K]
+
+
+def voice_agent_handler(question: str) -> str:
+    """
+    Handle a question query for the voice agent (RAG pipeline).
+    
+    Used by the WebSocket voice endpoint to process voice queries.
+    
+    Args:
+        question: The question string (in English)
+        
+    Returns:
+        The answer from the RAG pipeline
+        
+    Raises:
+        Exception: If RAG processing fails
+    """
+    global rag_chain, system_initialized
+    
+    if not rag_chain:
+        raise ValueError("RAG system not initialized")
+    
+    # Initialize if needed
+    if not system_initialized:
+        success, message = initialize_rag_system()
+        if not success:
+            raise ValueError(f"RAG initialization failed: {message}")
+    
+    # Get retrieved sources
+    sources = get_retrieved_sources(question)
+    context = _format_docs(sources) if sources else ""
+    
+    # Invoke RAG chain
+    response = rag_chain.invoke({"context": context, "question": question})
+    response = _strip_leading_reasoning(response or "")
+    
+    if not (response and response.strip()):
+        response = (
+            "No answer was generated from the retrieved documents. "
+            "Please try again or rephrase your question."
+        )
+    
+    return response
 
 
 def _source_doc_key(doc: dict) -> str:
@@ -526,7 +666,6 @@ def index():
     return render_template('index.html')
 
 
-
 @app.route('/api/initialize', methods=['POST'])
 def api_initialize():
     """Initialize the RAG system"""
@@ -637,6 +776,165 @@ def api_chat():
         }), 500
 
 
+@app.route('/api/chat/voice', methods=['POST'])
+def api_chat_voice():
+    """
+    Unified voice endpoint that integrates STT → RAG → TTS in a single pipeline (English only).
+    
+    Input:
+        - Audio file (WAV format) in request.files['audio']
+    
+    Output:
+        {
+            'success': True,
+            'input_text': 'Transcribed question',
+            'response': 'RAG answer',
+            'sources': [...],
+            'retrieval_metrics': {...},
+            'audio_base64': 'Base64-encoded MP3 of response'
+        }
+    """
+    try:
+        # Get audio file
+        if 'audio' not in request.files:
+            return jsonify({
+                'error': 'No audio file provided'
+            }), 400
+        
+        audio_file = request.files['audio']
+        if not audio_file or audio_file.filename == '':
+            return jsonify({
+                'error': 'No audio file selected'
+            }), 400
+        
+        # Initialize RAG if needed
+        if not system_initialized:
+            success, message = initialize_rag_system()
+            if not success:
+                return jsonify({
+                    'error': message
+                }), 500
+        
+        # Import voice agent functions
+        try:
+            from api.voice_agent import (
+                speech_to_text,
+                text_to_speech
+            )
+        except ImportError:
+            from voice_agent import (
+                speech_to_text,
+                text_to_speech
+            )
+        import tempfile
+        import base64
+        
+        print(f"🎤 Processing English voice input...")
+        
+        # Step 1: Save audio to temp file
+        with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as tmp:
+            audio_file.save(tmp.name)
+            temp_audio_path = tmp.name
+        
+        try:
+            # Step 2: Transcribe audio to English
+            english_question = speech_to_text(temp_audio_path)
+            print(f"🎤 English STT: {english_question}")
+            input_text = english_question
+            
+            # Step 3: RAG pipeline
+            if not rag_chain:
+                return jsonify({
+                    'error': 'System not properly initialized. RAG chain is unavailable.'
+                }), 500
+            
+            sources = get_retrieved_sources(english_question)
+            context = _format_docs(sources) if sources else ""
+            response = rag_chain.invoke({"context": context, "question": english_question})
+            response = _strip_leading_reasoning(response or "")
+            
+            if not (response and response.strip()):
+                response = (
+                    "No answer was generated from the retrieved documents. "
+                    "Please try again or rephrase your question."
+                )
+            
+            response = _strip_reference_section(response)
+            response = _enforce_concise_answer(response, english_question)
+            
+            # Step 4: Format sources
+            meta_get = lambda d, k: (d.get(k) or d.get(k.lower()) or "")
+            source_docs = []
+            for doc in sources:
+                meta = (getattr(doc, "metadata", None) or (doc.get("metadata") if isinstance(doc, dict) else {})) or {}
+                content = getattr(doc, "page_content", None) or (doc.get("page_content") if isinstance(doc, dict) else "")
+                doc_type = meta.get("type", "unknown")
+                if doc_type == "pdf_document":
+                    filename = meta_get(meta, "filename")
+                    source_docs.append({
+                        "filename": filename,
+                        "text_name": _get_text_name_from_filename(filename),
+                        "content": content,
+                        "type": "pdf_document",
+                    })
+                else:
+                    source_docs.append({
+                        "metadata": meta,
+                        "content": content,
+                        "type": "unknown",
+                    })
+            
+            cited = _count_cited_sources(response, source_docs)
+            recall = _recall_at_k(english_question, source_docs)
+            retrieval_metrics = {
+                'k': RETRIEVAL_K,
+                'retrieved': len(source_docs),
+                'cited_in_answer': cited,
+                'precision_at_k': round(cited / RETRIEVAL_K, 4) if RETRIEVAL_K else 0,
+                'recall_at_k': recall,
+            }
+            
+            # Step 5: TTS - Generate English audio response
+            audio_path = text_to_speech(response)
+            
+            # Read audio file
+            with open(audio_path, 'rb') as f:
+                audio_data = f.read()
+            
+            # Clean up temp files
+            import os
+            try:
+                os.unlink(temp_audio_path)
+                os.unlink(audio_path)
+            except:
+                pass
+            
+            return jsonify({
+                'success': True,
+                'input_text': input_text,
+                'response': response,
+                'sources': source_docs,
+                'retrieval_metrics': retrieval_metrics,
+                'audio_base64': base64.b64encode(audio_data).decode('utf-8')
+            })
+        
+        finally:
+            # Cleanup
+            try:
+                import os
+                os.unlink(temp_audio_path)
+            except:
+                pass
+    
+    except Exception as e:
+        import traceback
+        print(f"❌ Voice chat error: {e}")
+        traceback.print_exc()
+        return jsonify({
+            'error': f'Voice processing failed: {str(e)}'
+        }), 500
+
+
 def _get_relevant_keys_for_query(user_query: str):
     """Return set of relevant doc keys from eval set if query matches, else None."""
     if not _eval_relevance:
@@ -692,6 +990,121 @@ def api_status():
         'model': 'Llama 4 Maverick',
         'search_type': 'Semantic Similarity'
     })
+
+
+# ============================================================================
+# WebSocket Voice Agent Endpoint (English-Only Streaming)
+# ============================================================================
+
+def websocket_voice(ws):
+    """
+    WebSocket endpoint for English voice agent streaming.
+    
+    Protocol:
+    - Client sends: binary audio chunks
+    - Server sends: JSON events with type and data
+      - {"type": "stt_result", "text": "..."}
+      - {"type": "agent_response", "text": "..."}
+      - {"type": "tts_chunk", "audio": "<base64>"}
+      - {"type": "error", "message": "..."}
+      - {"type": "complete"}
+    """
+    import base64
+    import asyncio
+    try:
+        from api.voice_agent import create_voice_pipeline
+    except ImportError:
+        from voice_agent import create_voice_pipeline
+    
+    logger = __import__('logging').getLogger(__name__)
+    logger.info("🎙️ Voice WebSocket connected")
+    
+    try:
+        # Initialize RAG if needed
+        if not system_initialized:
+            success, message = initialize_rag_system()
+            if not success:
+                ws.send(json.dumps({
+                    "type": "error",
+                    "message": f"System initialization failed: {message}"
+                }))
+                ws.close()
+                return
+        
+        # Create the voice pipeline with the agent handler
+        pipeline = create_voice_pipeline(voice_agent_handler)
+        
+        # Create an async generator for audio chunks from WebSocket
+        async def websocket_audio_stream():
+            """Yield audio bytes received from WebSocket."""
+            try:
+                while True:
+                    data = ws.receive()
+                    if isinstance(data, bytes):
+                        yield data
+                    elif data is None:
+                        # Connection closed
+                        break
+            except Exception as e:
+                logger.error(f"WebSocket receive error: {e}")
+        
+        # Run the async pipeline
+        async def run_pipeline():
+            """Execute the voice pipeline and send results back."""
+            try:
+                audio_stream = websocket_audio_stream()
+                output_stream = pipeline(audio_stream)
+                
+                async for event in output_stream:
+                    if event["type"] == "error":
+                        ws.send(json.dumps(event))
+                    elif event["type"] == "tts_chunk":
+                        # Encode audio bytes as base64 for transfer
+                        audio_b64 = base64.b64encode(event["audio"]).decode('utf-8')
+                        ws.send(json.dumps({
+                            "type": "tts_chunk",
+                            "audio": audio_b64
+                        }))
+                    else:
+                        # Pass through other events (stt_result, agent_response)
+                        ws.send(json.dumps(event))
+                
+                # Send completion signal
+                ws.send(json.dumps({"type": "complete"}))
+                
+            except Exception as e:
+                logger.error(f"Pipeline execution error: {e}")
+                ws.send(json.dumps({
+                    "type": "error",
+                    "message": f"Pipeline error: {str(e)}"
+                }))
+        
+        # Run the async pipeline in the current event loop
+        # Note: flask-sock handles async context, so we use asyncio.run
+        try:
+            asyncio.run(run_pipeline())
+        except RuntimeError:
+            # Event loop already running (in some deployment scenarios)
+            loop = asyncio.get_event_loop()
+            loop.run_until_complete(run_pipeline())
+        
+    except Exception as e:
+        logger.error(f"WebSocket error: {e}", exc_info=True)
+        try:
+            ws.send(json.dumps({
+                "type": "error",
+                "message": f"WebSocket error: {str(e)}"
+            }))
+        except:
+            pass
+    finally:
+        logger.info("🎙️ Voice WebSocket disconnected")
+
+
+# Register WebSocket route only when flask-sock is available (not on Vercel serverless)
+if _WEBSOCKET_AVAILABLE and sock is not None:
+    sock.route('/ws/voice')(websocket_voice)
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001)

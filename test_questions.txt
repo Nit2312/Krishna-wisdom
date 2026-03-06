@@ -1,0 +1,103 @@
+# Krishna Wisdom System — Test Questions
+# Real-world daily life problems to validate RAG pipeline output quality.
+# Format: Category header followed by questions.
+# Use these to check retrieval relevance, answer coherence, and source citation.
+
+==============================================================================
+STRESS & ANXIETY
+==============================================================================
+1. I have too much work and not enough time. How do I stop feeling overwhelmed?
+2. I keep worrying about things that may never happen. How do I calm my anxious mind?
+3. My mind races at night and I cannot sleep. What does Krishna say about controlling the mind?
+4. I feel constant pressure to succeed at work. How do I deal with performance anxiety?
+5. I am stressed about money and financial security. What guidance is there for finding peace despite uncertainty?
+
+==============================================================================
+CAREER & PURPOSE
+==============================================================================
+6. I do not know what I want to do with my life. How do I find my true purpose?
+7. I am stuck in a job I hate but cannot afford to quit. How should I approach my work?
+8. I got passed over for a promotion I deserved. How do I handle feelings of injustice at work?
+9. Should I follow a stable career path or pursue my passion even if it is risky?
+10. I work hard but my efforts are not being recognised. How do I stay motivated?
+
+==============================================================================
+RELATIONSHIPS & FAMILY
+==============================================================================
+11. I had a big fight with my parents and we are not speaking. How do I move forward?
+12. My close friend betrayed my trust. How do I deal with this hurt and disappointment?
+13. I am in a toxic relationship but I am afraid to leave. What wisdom applies here?
+14. How do I set healthy boundaries with people I love without feeling guilty?
+15. My marriage is going through a rough patch. What teachings can help us reconnect?
+
+==============================================================================
+GRIEF & LOSS
+==============================================================================
+16. I recently lost someone very close to me. How do I cope with grief?
+17. I am struggling to accept the death of a loved one. Does Krishna explain what happens after death?
+18. I lost my job and feel like my identity is gone. How do I rebuild myself?
+19. I failed at something I worked on for years. How do I recover from this deep disappointment?
+20. How do I let go of the past and stop living in regret?
+
+==============================================================================
+ANGER & EGO
+==============================================================================
+21. I have a bad temper and often say things I regret. How do I control my anger?
+22. I feel a strong sense of pride and ego. How do I become more humble?
+23. Someone insulted me publicly. How do I respond without losing my dignity?
+24. I hold grudges for a long time. How do I learn to forgive people who have hurt me?
+25. I get jealous of other people's success. How do I overcome envy?
+
+==============================================================================
+DECISION MAKING & CONFUSION
+==============================================================================
+26. I have two very important choices in front of me and I cannot decide. How do I choose wisely?
+27. Everyone around me has a different opinion on what I should do. How do I trust my own judgement?
+28. I keep changing my mind and second-guessing myself. How do I develop clarity?
+29. I want to do the right thing but the right thing feels very hard. What should I do?
+30. How do I make a big life decision without fear of making the wrong choice?
+
+==============================================================================
+SELF-DOUBT & CONFIDENCE
+==============================================================================
+31. I constantly compare myself to others and feel like I am not good enough.
+32. I am afraid of failure so I never try new things. How do I overcome this fear?
+33. I do not believe in myself anymore. How do I rebuild self-confidence?
+34. People tell me I am not talented enough to achieve my dreams. Should I listen to them?
+35. How do I silence my inner critic and develop a stronger sense of self-worth?
+
+==============================================================================
+DUTY & SACRIFICE
+==============================================================================
+36. I want to pursue my dreams but I feel obligated to take care of my family. What is the right thing to do?
+37. My personal values conflict with what my society or culture expects of me. How do I navigate this?
+38. I am being asked to do something at work that goes against my ethics. What should I do?
+39. How do I balance personal desires with responsibilities to others?
+40. Is it selfish to prioritise my own happiness and well-being?
+
+==============================================================================
+MEANING & SPIRITUALITY
+==============================================================================
+41. Life feels meaningless and empty. How do I find deeper meaning?
+42. I have everything I thought I wanted but I am still not happy. Why?
+43. What is the point of suffering? Why do bad things happen to good people?
+44. How do I develop a daily spiritual practice when I am always busy?
+45. I feel disconnected from God or any higher power. How do I reconnect?
+
+==============================================================================
+HEALTH & BODY
+==============================================================================
+46. I am struggling with a serious illness and feel hopeless. What wisdom can help me through this?
+47. I know I should eat well and exercise but I lack self-discipline. How do I build better habits?
+48. I am addicted to my phone and social media and it is affecting my mental health. What can I do?
+49. How do I develop strength to face physical pain or long-term illness with calm?
+50. I am getting older and struggling to accept changes in my body and energy. What perspective helps?
+
+==============================================================================
+EDGE CASES (Out-of-scope / Boundary Testing)
+==============================================================================
+51. What is the recipe for a traditional Indian meal? (Expected: out-of-scope response)
+52. Who won the cricket World Cup last year? (Expected: out-of-scope response)
+53. How do I invest in the stock market? (Expected: out-of-scope response)
+54. Write me a Python script to sort a list. (Expected: out-of-scope response)
+55. Tell me something from the Quran about patience. (Expected: graceful response noting scope is Hindu scriptures)

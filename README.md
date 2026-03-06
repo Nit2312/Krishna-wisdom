@@ -15,6 +15,7 @@ The system retrieves relevant passages from Astra DB, then generates a concise a
 - Uses Groq-hosted LLM for final response generation
 - Uses Hugging Face embeddings (`sentence-transformers/all-mpnet-base-v2`)
 - Includes a Krishna-themed web chat UI
+- **NEW: Gujarati Voice Agent** - speak your question in Gujarati, get spoken answers back!
 
 ## Tech stack
 
@@ -96,8 +97,28 @@ Open: `http://127.0.0.1:5000`
 - `GET /` — chat UI
 - `GET /api/status` — initialization status
 - `POST /api/initialize` — initialize RAG chain and retriever
-- `POST /api/chat` — ask a question
+- `POST /api/chat` — ask a question (text)
+- `POST /api/voice-chat` — ask a question (Gujarati voice)
 - `POST /api/evaluate` — run answer evaluation helper
+
+## Voice Agent Feature
+
+The system now supports Gujarati voice interaction:
+
+**How it works:**
+1. Click the microphone button in the chat UI
+2. Speak your question in Gujarati
+3. System transcribes speech → translates to English → runs RAG → translates answer to Gujarati → generates Gujarati speech
+4. Hear the answer spoken back in Gujarati
+
+**Pipeline:**
+- **Speech-to-Text**: Whisper (via Groq) for Gujarati transcription
+- **Translation**: Groq LLM for Gujarati ↔ English
+- **Text-to-Speech**: AI4Bharat Indic-TTS for Gujarati speech synthesis
+
+**Requirements:**
+- Microphone access in browser
+- Additional dependencies: `transformers`, `torch`, `soundfile`, `TTS`
 
 ## Response behavior
 

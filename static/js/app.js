@@ -12,15 +12,50 @@ const messageInput = document.getElementById('messageInput');
 const sendBtn = document.getElementById('sendBtn');
 const initBtn = document.getElementById('initBtn');
 const loadingOverlay = document.getElementById('loadingOverlay');
+const themeToggle = document.getElementById('themeToggle');
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
+    initializeTheme();
     checkSystemStatus();
     setupEventListeners();
     setupMobileSidebar();
     setupSidebarToggle();
     setupNewChat();
 });
+
+// ========== THEME MANAGEMENT ==========
+function initializeTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const isDark = savedTheme ? savedTheme === 'dark' : prefersDark;
+    
+    if (isDark) {
+        document.documentElement.classList.add('dark-mode');
+        updateThemeIcon(true);
+    } else {
+        document.documentElement.classList.remove('dark-mode');
+        updateThemeIcon(false);
+    }
+    
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+    }
+}
+
+function toggleTheme() {
+    const isDark = document.documentElement.classList.toggle('dark-mode');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    updateThemeIcon(isDark);
+}
+
+function updateThemeIcon(isDark) {
+    if (!themeToggle) return;
+    const icon = themeToggle.querySelector('i');
+    if (icon) {
+        icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+    }
+}
 
 // Setup event listeners
 function setupEventListeners() {
@@ -338,34 +373,93 @@ function addMessage(content, sender, sources = [], isError = false, retrievalMet
 
 // Format AI response for better readability
 function formatAIResponse(content) {
-    // Convert markdown-like formatting to HTML
-    let formatted = content
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // Bold text
-        .replace(/\*(.*?)\*/g, '<em>$1</em>')              // Italic text
-        .replace(/CaseID:\s*(\w+)/g, '<span class="case-id">CaseID: $1</span>')
-        .replace(/Job_Name:\s*([^,\n]+)/g, '<span class="job-name">Job Name: $1</span>')
-        .replace(/•\s+(.+)/g, '<li>$1</li>')               // Bullet points
-        .replace(/(\d+\.\s+.+)/g, '<li>$1</li>')           // Numbered lists
-        .replace(/\n\n/g, '</p><p>')                      // Paragraph breaks
-        .replace(/\n/g, '<br>');                           // Line breaks
-    
-    // Wrap in paragraph tags
-    if (!formatted.startsWith('<p>')) {
-        formatted = '<p>' + formatted;
+    const escaped = escapeHtml(content || '');
+    const lines = escaped.split('\n');
+
+    const blocks = [];
+    let paragraphLines = [];
+    let ulItems = [];
+    let olItems = [];
+
+    const flushParagraph = () => {
+        if (!paragraphLines.length) return;
+        const text = paragraphLines.join('\n').trim();
+        if (text) blocks.push({ type: 'p', text });
+        paragraphLines = [];
+    };
+    const flushUl = () => {
+        if (!ulItems.length) return;
+        blocks.push({ type: 'ul', items: ulItems.slice() });
+        ulItems = [];
+    };
+    const flushOl = () => {
+        if (!olItems.length) return;
+        blocks.push({ type: 'ol', items: olItems.slice() });
+        olItems = [];
+    };
+
+    for (const rawLine of lines) {
+        const line = rawLine.replace(/\r$/, '');
+        const trimmed = line.trim();
+
+        // Blank line = paragraph break
+        if (!trimmed) {
+            flushUl();
+            flushOl();
+            flushParagraph();
+            continue;
+        }
+
+        // Unordered list: • item, - item
+        const ulMatch = trimmed.match(/^([•-])\s+(.*)$/);
+        if (ulMatch) {
+            flushOl();
+            flushParagraph();
+            ulItems.push(ulMatch[2]);
+            continue;
+        }
+
+        // Ordered list: 1. item or 1) item
+        const olMatch = trimmed.match(/^(\d+)[.)]\s+(.*)$/);
+        if (olMatch) {
+            flushUl();
+            flushParagraph();
+            olItems.push(olMatch[2]);
+            continue;
+        }
+
+        // Normal paragraph line
+        flushUl();
+        flushOl();
+        paragraphLines.push(trimmed);
     }
-    if (!formatted.endsWith('</p>')) {
-        formatted = formatted + '</p>';
-    }
-    
-    // Convert list items to proper HTML lists
-    formatted = formatted.replace(/(<li>.*?<\/li>)/gs, function(match) {
-        return match.replace(/<p>(.*?)<\/p>/g, '$1');
-    });
-    
-    // Group consecutive list items
-    formatted = formatted.replace(/(<li>.*?<\/li>\s*)+/gs, '<ul>$&</ul>');
-    
-    return formatted;
+
+    flushUl();
+    flushOl();
+    flushParagraph();
+
+    const inlineFormat = (text) => {
+        return text
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.+?)\*/g, '<em>$1</em>')
+            .replace(/CaseID:\s*(\w+)/g, '<span class="case-id">CaseID: $1</span>')
+            .replace(/Job_Name:\s*([^,\n]+)/g, '<span class="job-name">Job Name: $1</span>');
+    };
+
+    const html = blocks.map((b) => {
+        if (b.type === 'p') {
+            return '<p>' + inlineFormat(b.text).replace(/\n/g, '<br>') + '</p>';
+        }
+        if (b.type === 'ul') {
+            return '<ul>' + b.items.map(i => '<li>' + inlineFormat(i) + '</li>').join('') + '</ul>';
+        }
+        if (b.type === 'ol') {
+            return '<ol>' + b.items.map(i => '<li>' + inlineFormat(i) + '</li>').join('') + '</ol>';
+        }
+        return '';
+    }).join('');
+
+    return html || '<p></p>';
 }
 
 // Create expandable sources section
@@ -640,6 +734,206 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// ========== VOICE RECORDING FUNCTIONALITY ==========
+let mediaRecorder = null;
+let audioChunks = [];
+let currentAudio = null;  // Track current audio playback
+let isRecording = false;
+const voiceBtn = document.getElementById('voiceBtn');
+
+async function toggleVoiceRecording() {
+    if (!isSystemInitialized) {
+        showNotification('Please wait for system to initialize', 'error');
+        return;
+    }
+
+    if (isRecording) {
+        stopRecording();
+    } else {
+        await startRecording();
+    }
+}
+
+async function startRecording() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+        
+        mediaRecorder.addEventListener('dataavailable', event => {
+            audioChunks.push(event.data);
+        });
+        
+        mediaRecorder.addEventListener('stop', async () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+            await sendVoiceMessage(audioBlob);
+            
+            // Stop all audio tracks
+            stream.getTracks().forEach(track => track.stop());
+        });
+        
+        mediaRecorder.start();
+        isRecording = true;
+        
+        // Update UI
+        voiceBtn.classList.add('recording');
+        voiceBtn.innerHTML = '<i class="fas fa-stop"></i>';
+        messageInput.placeholder = 'Recording... Click mic to stop';
+        
+        showNotification('Recording started', 'info');
+        
+    } catch (error) {
+        console.error('Error accessing microphone:', error);
+        showNotification('Microphone access denied', 'error');
+    }
+}
+
+function stopRecording() {
+    if (mediaRecorder && isRecording) {
+        mediaRecorder.stop();
+        isRecording = false;
+        
+        // Update UI
+        voiceBtn.classList.remove('recording');
+        voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+        messageInput.placeholder = 'Ask for Krishna\'s wisdom...';
+    }
+}
+
+async function sendVoiceMessage(audioBlob) {
+    try {
+        showLoading(true);
+        
+        // Create form data with audio file
+        const formData = new FormData();
+        formData.append('audio', audioBlob, 'recording.wav');
+        
+        const response = await fetch('/api/chat/voice', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.error || 'Voice processing failed');
+        }
+        
+        // Display transcribed question
+        addMessage(data.input_text, 'user');
+        
+        addMessage(
+            data.response,
+            'assistant',
+            data.sources || [],
+            false,
+            data.retrieval_metrics,
+            data.input_text
+        );
+        
+        // Play audio response
+        if (data.audio_base64) {
+            playAudioResponse(data.audio_base64);
+        }
+        
+        showNotification('Voice response ready', 'success');
+        
+    } catch (error) {
+        console.error('Error sending voice message:', error);
+        addMessage('Sorry, voice processing failed: ' + error.message, 'assistant', [], true);
+        showNotification('Voice processing error', 'error');
+    } finally {
+        showLoading(false);
+    }
+}
+
+function playAudioResponse(base64Audio) {
+    try {
+        // Stop any currently playing audio
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+        }
+        
+        // Decode base64 and create audio element
+        const audioData = atob(base64Audio);
+        const arrayBuffer = new ArrayBuffer(audioData.length);
+        const view = new Uint8Array(arrayBuffer);
+        
+        for (let i = 0; i < audioData.length; i++) {
+            view[i] = audioData.charCodeAt(i);
+        }
+        
+        const blob = new Blob([arrayBuffer], { type: 'audio/mp3' });
+        const audioUrl = URL.createObjectURL(blob);
+        
+        const audio = new Audio(audioUrl);
+        currentAudio = audio;  // Store reference to current audio
+        
+        // Show audio control button
+        const audioControlBtn = document.getElementById('audioControlBtn');
+        audioControlBtn.style.display = 'flex';
+        audioControlBtn.classList.add('playing');
+        
+        // Update button state based on playback state
+        audio.addEventListener('play', () => {
+            audioControlBtn.classList.add('playing');
+            updateAudioControlButton();
+        });
+        
+        audio.addEventListener('pause', () => {
+            updateAudioControlButton();
+        });
+        
+        audio.addEventListener('ended', () => {
+            audioControlBtn.style.display = 'none';
+            audioControlBtn.classList.remove('playing');
+            currentAudio = null;
+            URL.revokeObjectURL(audioUrl);
+        });
+        
+        audio.addEventListener('error', () => {
+            audioControlBtn.style.display = 'none';
+            audioControlBtn.classList.remove('playing');
+            currentAudio = null;
+            URL.revokeObjectURL(audioUrl);
+        });
+        
+        audio.play();
+        
+    } catch (error) {
+        console.error('Error playing audio:', error);
+    }
+}
+
+// Toggle audio playback (pause/resume)
+function toggleAudioPlayback() {
+    if (!currentAudio) return;
+    
+    if (currentAudio.paused) {
+        currentAudio.play();
+    } else {
+        currentAudio.pause();
+    }
+}
+
+// Update audio control button icon
+function updateAudioControlButton() {
+    const audioControlBtn = document.getElementById('audioControlBtn');
+    const icon = audioControlBtn.querySelector('i');
+    
+    if (currentAudio && !currentAudio.paused) {
+        icon.classList.remove('fa-play');
+        icon.classList.add('fa-pause');
+        audioControlBtn.setAttribute('aria-label', 'Pause audio');
+    } else {
+        icon.classList.remove('fa-pause');
+        icon.classList.add('fa-play');
+        audioControlBtn.setAttribute('aria-label', 'Resume audio');
+    }
+}
 
 // Auto-refresh status every 30 seconds
 setInterval(checkSystemStatus, 30000);

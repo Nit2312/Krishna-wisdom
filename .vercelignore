@@ -1,5 +1,7 @@
 .env
 .venv
+venv/
+env/
 .DS_Store
 .git
 .gitignore
@@ -18,3 +20,7 @@ __pycache__/
 node_modules/
 .npm/
 *.md
+requirements-local.txt
+ingest_astra.py
+questions.txt
+test_questions.txt
