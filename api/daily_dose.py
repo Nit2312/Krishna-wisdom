@@ -22,8 +22,8 @@ except ImportError:
 
 load_dotenv()
 
-# Path to the topics file (relative to the repo root)
-TOPICS_FILE = Path(__file__).parent.parent / "data" / "daily_topics.json"
+# Path to the topics file (same directory as this module for Vercel compatibility)
+TOPICS_FILE = Path(__file__).parent / "daily_topics.json"
 
 # ─── Journey start date ────────────────────────────────────────────────────────
 # Day 1 of the 100-day journey.  Change this only once, when you want to
@@ -88,9 +88,11 @@ def _get_collection():
     if _mongo_collection is not None:
         return _mongo_collection
     if not _PYMONGO_AVAILABLE:
+        print("[daily_dose] pymongo not available, MongoDB disabled", file=sys.stderr)
         return None
     uri = os.getenv("MONGODB_URI")
     if not uri:
+        print("[daily_dose] MONGODB_URI not set, MongoDB disabled", file=sys.stderr)
         return None
     try:
         client = MongoClient(uri, serverSelectionTimeoutMS=5000)
@@ -160,7 +162,9 @@ def _get_llm() -> ChatGroq:
     if _llm_instance is None:
         groq_key = os.getenv("GROQ_API_KEY")
         if not groq_key:
+            print("[daily_dose] GROQ_API_KEY not set, cannot generate messages", file=sys.stderr)
             raise ValueError("GROQ_API_KEY environment variable is not set.")
+        print("[daily_dose] Initializing Groq LLM client", file=sys.stderr)
         _llm_instance = ChatGroq(
             api_key=groq_key,   # type: ignore
             model="llama-3.3-70b-versatile",
@@ -172,9 +176,16 @@ def _get_llm() -> ChatGroq:
 
 def load_topics() -> list[dict]:
     """Load and return all 100 daily topics."""
-    with open(TOPICS_FILE, "r", encoding="utf-8") as f:
-        data = json.load(f)
-    return data["topics"]
+    print(f"[daily_dose] Loading topics from {TOPICS_FILE}", file=sys.stderr)
+    try:
+        with open(TOPICS_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        topics = data["topics"]
+        print(f"[daily_dose] Loaded {len(topics)} topics", file=sys.stderr)
+        return topics
+    except Exception as exc:
+        print(f"[daily_dose] ERROR loading topics: {exc}", file=sys.stderr)
+        raise
 
 
 def get_topic_for_day(day_number: int | None = None) -> dict:
@@ -194,20 +205,27 @@ def generate_daily_message(topic: dict) -> str:
     Call the LLM to generate a ~500-word daily message for the given topic dict.
     Returns the generated text.
     """
-    llm = _get_llm()
-    prompt = PromptTemplate(
-        template=DAILY_DOSE_TEMPLATE,
-        input_variables=["title", "source", "question"],
-    )
-    chain = prompt | llm | StrOutputParser()
-    result = chain.invoke(
-        {
-            "title": topic["title"],
-            "source": topic["source"],
-            "question": topic["question"],
-        }
-    )
-    return (result or "").strip()
+    print(f"[daily_dose] Generating message for day {topic['day']}: {topic['title']}", file=sys.stderr)
+    try:
+        llm = _get_llm()
+        prompt = PromptTemplate(
+            template=DAILY_DOSE_TEMPLATE,
+            input_variables=["title", "source", "question"],
+        )
+        chain = prompt | llm | StrOutputParser()
+        result = chain.invoke(
+            {
+                "title": topic["title"],
+                "source": topic["source"],
+                "question": topic["question"],
+            }
+        )
+        msg = (result or "").strip()
+        print(f"[daily_dose] Generated {len(msg)} chars for day {topic['day']}", file=sys.stderr)
+        return msg
+    except Exception as exc:
+        print(f"[daily_dose] ERROR generating message: {exc}", file=sys.stderr)
+        raise
 
 
 def get_daily_dose(day_number: int | None = None) -> dict:
@@ -223,21 +241,34 @@ def get_daily_dose(day_number: int | None = None) -> dict:
     Returns a dict with: day, title, source, theme, question, message, date,
     journey_start, today_day, and cached (bool to indicate source).
     """
+    print(f"[daily_dose] get_daily_dose called with day_number={day_number}", file=sys.stderr)
+    
     today_day = current_journey_day()
+    print(f"[daily_dose] Current journey day: {today_day}", file=sys.stderr)
+    
     topic = get_topic_for_day(day_number)   # uses today_day when day_number is None
     resolved_day = topic["day"]
+    print(f"[daily_dose] Resolved to day {resolved_day}: {topic['title']}", file=sys.stderr)
 
     # ── 1. Try cache ──────────────────────────────────────────────────────────
     cached = _cache_get(resolved_day)
     if cached:
+        print(f"[daily_dose] Cache HIT for day {resolved_day}", file=sys.stderr)
         # Patch live fields so UI always shows correct "today" progress
         cached["today_day"] = today_day
         cached["journey_start"] = JOURNEY_START.strftime("%B %d, %Y")
         cached["cached"] = True
         return cached
+    
+    print(f"[daily_dose] Cache MISS for day {resolved_day}, generating...", file=sys.stderr)
 
     # ── 2. Generate ───────────────────────────────────────────────────────────
-    message = generate_daily_message(topic)
+    try:
+        message = generate_daily_message(topic)
+    except Exception as exc:
+        print(f"[daily_dose] ERROR in generate_daily_message: {exc}", file=sys.stderr)
+        raise
+    
     dose = {
         "day": resolved_day,
         "title": topic["title"],
@@ -253,6 +284,7 @@ def get_daily_dose(day_number: int | None = None) -> dict:
 
     # ── 3. Persist ────────────────────────────────────────────────────────────
     _cache_set(dose)
+    print(f"[daily_dose] Successfully generated and cached day {resolved_day}", file=sys.stderr)
     return dose
 
 
